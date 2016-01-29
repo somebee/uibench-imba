@@ -1,0 +1,28 @@
+{
+  "private": true,
+  "name": "uibench-imba",
+  "version": "0.1.0",
+  "description": "UI Benchmark: Imba",
+  "homepage": "https://github.com/somebee/uibench-imba",
+  "repository": "https://github.com/somebee/uibench-imba",
+  "author": {
+    "name": "Sindre Aarsaether",
+    "email": "sindre@identu.no",
+    "url": "https://github.com/somebee"
+  },
+  "keywords": [
+    "imba",
+    "uibench",
+    "benchmark"
+  ],
+  "dependencies": {
+    "imba": "^0.14.3"
+  },
+  "devDependencies": {
+    "gulp": "^3.9.0",
+    "gulp-gh-pages": "^0.5.4",
+    "gulp-util": "^3.0.7",
+    "webpack": "^1.12.11",
+    "webpack-dev-server": "^1.14.1"
+  }
+}
