@@ -78,13 +78,25 @@ tag main
 		self
 
 	def render state, loc
+		# console.log loc
+
+		if loc == 'table' and state:table:items:length == 0
+			# console.log 'table init before render?!?',@ploc
+			@Table = null
+
+		elif loc == 'tree' and @ploc == 'home'
+			# console.log 'tree init before render?',state:tree:root,@ploc
+			@Tree = null
+
+		@ploc = loc
+
 		<self>
 			if loc == 'table'
-				<uitable.Table object=(state:table)>
+				<uitable@Table object=(state:table)>
 			elif loc == 'anim'
-				<uianim.Anim object=(state:anim)>
+				<uianim@Anim object=(state:anim)>
 			elif loc == 'tree'
-				<uitree.Tree object=(state:tree)>
+				<uitree@Tree object=(state:tree)>
 
 
 uibench.init('Imba', '0.14.3')
