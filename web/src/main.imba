@@ -25,14 +25,22 @@ tag uianim
 
 tag uitable < table
 
+	tag cell < td
+		def end
+			self
+
+		def onclick e
+			console.log "Clicked {text}"
+			e.halt
+
 	tag row < tr
 		def cells array
 			for item,i in array
-				<td@{i}.TableCell text=item>
+				<cell@{i}.TableCell text=item>
 
 		def render
 			<self>
-				<td.TableCell> "#{@object:id}"
+				<cell.TableCell text="#{@object:id}">
 				cells @object:props
 
 		def commit
