@@ -1,123 +1,93 @@
-
 extern uibench
 
 require 'imba'
 
-tag animbox
-
-	def time= time
-		if time == @time
-			return self
-
-		@time = time
-		dom:style:borderRadius = (time % 10).toString + 'px'
-		dom:style:background = 'rgba(0,0,0,' + (0.5 + ((time % 10) / 10)).toString() + ')'
-		self
-
-	def end
-		self
-
 tag uianim
-	prop object watch: :render
-	def end do self
+
+	tag box
+		prop time watch: :restyle
+
+		def restyle
+			dom:style:borderRadius = @time.toString + 'px'
+			dom:style:background = "rgba(0,0,0,{0.5 + (@time / 10)})"
+			self
+
+		def end
+			self
 
 	def items array
 		for item in array
-			<animbox@{item:id}.AnimBox time=(item:time)>
+			<box@{item:id}.AnimBox time=(item:time % 10)>
 
 	def render
-		<self> items(object:items)
-
-tag uitablerow < tr
-	prop object watch: :render
-	def end do self
-
-	def render
-		<self .active=(object:active)>
-			<td.TableCell text="#{object:id}">
-			for item,i in object:props
-				<td@{i}.TableCell text=item>
+		<self> items(@object:items)
 
 
 tag uitable < table
-	prop object watch: :render
-	def end do self
+
+	tag row < tr
+		def cells array
+			for item,i in array
+				<td@{i}.TableCell text=item>
+
+		def render
+			<self>
+				<td.TableCell> "#{@object:id}"
+				cells @object:props
+
+		def commit
+			self
 
 	def items array
 		for item in array
-			<uitablerow@{item:id}.TableRow object=item>
+			<row@{item:id}.TableRow .active=(item:active) object=item>
 
 	def render
-		<self> <tbody> items(object:items)
-
-tag tree-node < ul
-	prop object watch: :render
-	def end do self
-
-	def items array
-		for child,i in array
-			if child:container
-				<tree-node@{child:id}.TreeNode object=child>
-			else
-				<li@{child:id}.TreeLeaf text="{child:id}">
-
-	def render
-		<self> items(object:children)
-			
+		<self> <tbody> items(@object:items)
 
 tag uitree
-	prop object watch: :render
-	def end do self
+
+	tag leaf < li
+		def end do self
+
+	tag node < ul
+
+		def items array
+			for child,i in array
+				if child:container
+					<node@{child:id}.TreeNode object=child>
+				else
+					<leaf@{child:id}.TreeLeaf text=child:id>
+
+		def render
+			<self> items(@object:children)
 
 	def render
-		<self> <tree-node.TreeNode object=(object:root)>
+		<self> <node.TreeNode object=(@object:root)>
 
 tag main
-	prop object watch: :render
-	def end do self
+	def build
+		self
 
-	def render
-		var data = object
-		var loc = data:location
-
+	def render state, loc
 		<self>
 			if loc == 'table'
-				<uitable.Table object=(data:table)>
+				<uitable.Table object=(state:table)>
 			elif loc == 'anim'
-				<uianim.Anim object=(data:anim)>
+				<uianim.Anim object=(state:anim)>
 			elif loc == 'tree'
-				<uitree.Tree object=(data:tree)>
+				<uitree.Tree object=(state:tree)>
 
 
 uibench.init('Imba', '0.14.3')
 
 document.addEventListener('DOMContentLoaded') do |e|
-	var container = document.querySelector('#App')
 	var main = <main.Main>
+	#App.append main
 
-	container.appendChild(main.dom)
-
-	var run = do |state|
-		main.object = state
-		# main.render
+	var run = do |state| main.render(state, state:location)
 
 	var pre = do |samples|
-		container:textContent = JSON.stringify(samples)
-		self
+		#App.empty.append <pre> JSON.stringify(samples,null,4)
 
 	uibench.run(run, pre)
-
-###
-document.addEventListener('DOMContentLoaded', function(e) {
-  var container = document.querySelector('#App');
-
-  uibench.run(
-      function(state) {
-        ReactDOM.render(<Main data={state}/>, container);
-      },
-      function(samples) {
-        ReactDOM.render(<pre>{JSON.stringify(samples, null, ' ')}</pre>, container);
-      }
-  );
-});
-###

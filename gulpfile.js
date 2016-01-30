@@ -15,7 +15,7 @@ gulp.task('build', function(callback) {
   var cfg = {
     entry: ['./web/src/main.imba'],
     output: {
-      path: path.join(__dirname, 'web'),
+      path: path.join(__dirname, 'build'),
       filename: 'bundle.js'
     },
     resolve: {
@@ -75,7 +75,7 @@ gulp.task('serve', function(callback) {
   };
 
   new WebpackDevServer(webpack(cfg), {
-    contentBase: './',
+    contentBase: './build',
     stats: {
       colors: true
     }
