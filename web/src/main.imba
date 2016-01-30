@@ -17,7 +17,7 @@ tag uianim
 
 	def items array
 		for item in array
-			<box@{item:id}.AnimBox time=(item:time % 10)>
+			<box@{item:id}.AnimBox data-id=(item:id) time=(item:time % 10)>
 
 	def render
 		<self> items(@object:items)
@@ -39,7 +39,7 @@ tag uitable < table
 				<cell@{i}.TableCell text=item>
 
 		def render
-			<self>
+			<self data-id=@object:id>
 				<cell.TableCell text="#{@object:id}">
 				cells @object:props
 
